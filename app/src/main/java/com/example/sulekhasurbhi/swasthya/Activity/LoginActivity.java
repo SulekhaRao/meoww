@@ -93,9 +93,6 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
                 }
-                Intent mainIntent = new Intent(LoginActivity.this, HomeScreenActivity.class);
-                startActivity(mainIntent);
-                finish();
             }
         });
 

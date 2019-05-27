@@ -19,7 +19,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

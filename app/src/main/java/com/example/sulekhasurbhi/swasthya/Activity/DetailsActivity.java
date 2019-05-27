@@ -1,19 +1,36 @@
 package com.example.sulekhasurbhi.swasthya.Activity;
 
 
+import android.media.Image;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.sulekhasurbhi.swasthya.R;
+
+import java.util.Locale;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    private TextView descTextView, titleTextView, headingTextView;
+    private TextView descTextView, titleTextView, headingTextView,t4,t5;
     private Toolbar myToolbar;
+    private RatingBar ratingBar;
+    //private Switch aSwitch;
+    ImageView i1,i2;
+    private TextToSpeech textToSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +42,7 @@ public class DetailsActivity extends AppCompatActivity {
          * Connecting all XML views to java file using findViewById
          */
         AddXMLToJava();
+
 
         /**
          **
@@ -60,11 +78,87 @@ public class DetailsActivity extends AppCompatActivity {
         descTextView = findViewById(R.id.textView21);
         titleTextView = findViewById(R.id.title_text);
         headingTextView = findViewById(R.id.textView18);
+        ratingBar=findViewById(R.id.ratingBar);
+        t4=findViewById(R.id.textView4);
+        i1=findViewById(R.id.imagemicon);
+        i2=findViewById(R.id.imagemicoff);
+        //t5=findViewById(R.id.textread);
+        //aSwitch=findViewById(R.id.switch1);
 
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status==TextToSpeech.SUCCESS){
+                    int ttslang = textToSpeech.setLanguage(Locale.forLanguageTag("hin"));
+                    if(ttslang==TextToSpeech.LANG_MISSING_DATA || ttslang==TextToSpeech.LANG_NOT_SUPPORTED){
+                        Log.e("TTS","The language is not supported" );
+                    }else{
+                        Log.e("TTS","Lang Supported");
+                    }
+                    Log.i("TTS","Initialization succeed ");
+                }else{
+                    Toast.makeText(getApplicationContext(), "TTS Initialization failed!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        i1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                i2.setVisibility(View.VISIBLE);
+                i1.setVisibility(View.INVISIBLE);
+                onStop();
+            }
+        });
+
+        i2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                i2.setVisibility(View.INVISIBLE);
+                i1.setVisibility(View.VISIBLE);
+                String data = descTextView.getText().toString();
+                Log.i("TTS", "button clicked: " + data);
+                int speechStatus = textToSpeech.speak(data, TextToSpeech.QUEUE_FLUSH, null);
+                if (speechStatus == TextToSpeech.ERROR) {
+                    Log.e("TTS", "Error in converting Text to Speech!");
+                }
+            }
+        });
+
+        /*aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(aSwitch.isChecked()){
+                    String data = descTextView.getText().toString();
+                    Log.i("TTS", "button clicked: " + data);
+                    int speechStatus = textToSpeech.speak(data, TextToSpeech.QUEUE_FLUSH, null);
+                    if (speechStatus == TextToSpeech.ERROR) {
+                        Log.e("TTS", "Error in converting Text to Speech!");
+                    }
+                }else{
+                    onStop();
+                }
+            }
+        });*/
+
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                t4.setText("Your rate :" + rating);
+            }
+        });
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(textToSpeech!=null){
+            textToSpeech.stop();
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

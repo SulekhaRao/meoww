@@ -9,8 +9,6 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlue">#C4DEE9</color>
     <color name="colorgreen">#EBF58B</color>
-    <color name="colorlightgreen">#D4FAF6</color>
-
-
-
+    <color name="colorlightgreen">#07BBA8</color>
+    <color name="FontGreen">#99E4D8</color>
 </resources>

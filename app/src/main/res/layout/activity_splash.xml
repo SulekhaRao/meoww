@@ -103,7 +103,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_social_care" />
+        android:src="@drawable/ic_social_care" />
 
 
 </android.support.constraint.ConstraintLayout>

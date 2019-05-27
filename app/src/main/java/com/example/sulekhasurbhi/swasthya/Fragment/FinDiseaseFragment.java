@@ -59,14 +59,14 @@ public class FinDiseaseFragment extends Fragment {
      * he/she can see a proper cart for that particular area and update details.
      */
 
-    private LottieAnimationView lottieAnimationView;
-    private TextView locationText;
+    //private LottieAnimationView lottieAnimationView;
+   // private TextView locationText;
     private Button locationButton, buttonview;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private ProgressDialog progressDialog;
     private TextView texttwo,textone, textthree, textfour, textfive;
-    private String[] parts;
+   // private String[] parts;
 
     //private static final int REQUEST_LOCATION = 1;
 
@@ -120,9 +120,6 @@ public class FinDiseaseFragment extends Fragment {
 
         textone.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.right_to_left));
         texttwo.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.right_to_left));
-        textfive.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.left_to_right));
-        pieChart.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.fade_scale_animation));
-
         // lottieAnimationView = rootView.findViewById(R.id.intro_lottie_animation_view);
         //lottieAnimationView.playAnimation();
          //Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.bottom_to_top);
@@ -161,12 +158,14 @@ public class FinDiseaseFragment extends Fragment {
             public void onClick(View v) {
                 progressDialog.setIcon(R.drawable.ic_social_care_green);
                 progressDialog.setTitle("Loading");
-                progressDialog.setMessage("Please wait for a moment..");
+                progressDialog.setMessage("Fetching your current location...");
                 progressDialog.show();
 
                 // fetching the current location
                 getLocation();
                 textfive.setText("Top three Diseases in Your Area. Know more by clicking View More button.");
+                textfive.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.left_to_right));
+                pieChart.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.fade_scale_animation));
                 setPieChart();
                 pieChart.setVisibility(View.VISIBLE);
                 buttonview.setVisibility(View.VISIBLE);
@@ -256,7 +255,7 @@ public class FinDiseaseFragment extends Fragment {
         pieChart.getDescription().setEnabled(true);
         pieChart.setExtraOffsets(5,10,5,5);
         pieChart.setDragDecelerationFrictionCoef(0.9f);
-        pieChart.setTransparentCircleRadius(61f);
+        pieChart.setTransparentCircleRadius(50f);
         pieChart.setHoleColor(Color.WHITE);
 
         ArrayList<PieEntry> yValues = new ArrayList<>();
@@ -358,7 +357,7 @@ public class FinDiseaseFragment extends Fragment {
         // String currentData =
 
         //  FirebaseApp.initializeApp(getContext());
-        Toast.makeText(getActivity(), mydata + "\n" + jsondata, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), mydata, Toast.LENGTH_SHORT).show();
           //  String data1 = jsondata;
 
 /*        if(mydata.equals(jsondata))

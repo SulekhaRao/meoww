@@ -1,5 +1,6 @@
 package com.example.sulekhasurbhi.swasthya.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,41 +8,47 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.sulekhasurbhi.swasthya.Activity.CheckMeDetails;
 import com.example.sulekhasurbhi.swasthya.R;
 
-public class CheckMeFragment extends Fragment implements View.OnClickListener {
+import java.util.ArrayList;
 
-    private TextView t1;
-    private ListView listView;
-    AutoCompleteTextView a1;
+public class CheckMeFragment extends Fragment {
+
+
+    private TextView t1,t2;
     Button b1;
-    //ImageView i1,i2,i3,i4,i5;
-
+    AutoCompleteTextView v1,v2,v3,v4,v5;
+    ImageView i1,i2,i3,i4,i5;
+    ListView listView;
     private static final String[] symptoms = new String[]{"Chest pain","Shortness of breath","Pain in your arms or legs",
-            "Pain in the neck/jaw/throat","Pain in upper abdomen or back"
+            "Pain in the neck/jaw/throat","Pain in upper abdomen going down to lower right abdomen "
             ,"Dizziness","Weakness or fatigue","Dry or persistent cough","Skin rashes or unusual spots","Coughing up blood",
             "Unintentional weight loss","Night sweats","Fever","Chills","Night sweats","Loss of appetite","Runny or stuffy nose",
-            "Sore throat","irregular periods","weight gain","oily skin or acne","excessive hair growth (hirsutism)",
+            "Sore throat","irregular periods/abnormal periods","weight gain","oily skin or acne","excessive hair growth (hirsutism)",
             "difficulty getting pregnant","Darkening of skin","Sleep apnea","Anxiety and depression","Infertility","Hair loss"};
+    private ArrayList<Integer> itemName = new ArrayList<>();
+    private ArrayList<Integer> itemSub = new ArrayList<>();
+    private ArrayList<Integer> itemDessymp = new ArrayList<>();
+    private ArrayList<Integer> itemDesreme = new ArrayList<>();
 
-    @Override
+
+     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //  getImages();
-        //i1.setOnClickListener(this);
-        //i2.setOnClickListener(this);
-        //i3.setOnClickListener(this);
-        //i4.setOnClickListener(this);
-        //i5.setOnClickListener(this);
-        b1.setOnClickListener(this);
-
+        getImages();
     }
 
     @Override
@@ -49,26 +56,31 @@ public class CheckMeFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_check_me, container, false);
 
-        final AutoCompleteTextView v1 = rootView.findViewById(R.id.autoCompleteTextView);
-        final AutoCompleteTextView v2 = rootView.findViewById(R.id.autoCompleteTextView2);
-        final AutoCompleteTextView v3 = rootView.findViewById(R.id.autoCompleteTextView3);
-        final AutoCompleteTextView v4 = rootView.findViewById(R.id.autoCompleteTextView4);
-        final AutoCompleteTextView v5 = rootView.findViewById(R.id.autoCompleteTextView5);
-        b1 = rootView.findViewById(R.id.buttonDiagnose);
-       /* i1 = rootView.findViewById(R.id.imageView1);
-        i2 = rootView.findViewById(R.id.imageView2);
-        i3 = rootView.findViewById(R.id.imageView3);
-        i4 = rootView.findViewById(R.id.imageView4);
-        i5 = rootView.findViewById(R.id.imageView5);
-        t1 = rootView.findViewById(R.id.textView2);*/
+        t1 =rootView.findViewById(R.id.textView2);
 
-        v1.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.right_to_left));
-        v2.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.right_to_left));
-        v3.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.right_to_left));
-        v4.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.right_to_left));
-        v5.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.right_to_left));
-        b1.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.left_to_right));
-        t1.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.left_to_right));
+        v1 = rootView.findViewById(R.id.autoCompleteTextView);
+        v2 = rootView.findViewById(R.id.autoCompleteTextView2);
+        v3 = rootView.findViewById(R.id.autoCompleteTextView3);
+        v4 = rootView.findViewById(R.id.autoCompleteTextView4);
+        v5 = rootView.findViewById(R.id.autoCompleteTextView5);
+
+        v1.setThreshold(1);
+        v2.setThreshold(1);
+        v3.setThreshold(1);
+        v4.setThreshold(1);
+        v5.setThreshold(1);
+
+        i1 =rootView.findViewById(R.id.icon1);
+        i2 =rootView.findViewById(R.id.icon2);
+        i3 =rootView.findViewById(R.id.icon3);
+        i4 =rootView.findViewById(R.id.icon4);
+        i5 =rootView.findViewById(R.id.icon5);
+
+        b1 = rootView.findViewById(R.id.buttonDiagnose);
+
+        t2 = rootView.findViewById(R.id.textView1);
+
+        listView = rootView.findViewById(R.id.ListViewNB);
 
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_dropdown_item_1line,symptoms );
         v1.setAdapter(adapter1);
@@ -81,174 +93,126 @@ public class CheckMeFragment extends Fragment implements View.OnClickListener {
         ArrayAdapter<String> adapter5 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_dropdown_item_1line,symptoms );
         v5.setAdapter(adapter5);
 
-
-
-
-        /*DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Location");
-        GeoFire geoFire = new GeoFire(ref);
-        // geoFire.setLocation("firebase-hq", new GeoLocation(37.7853889, -122.4056973));
-
-        geoFire.setLocation("firebase-hq", new GeoLocation(28.6774052, 77.2066878), new GeoFire.CompletionListener() {
-
+        i1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(String key, DatabaseError error) {
-                if (error != null) {
-                    System.err.println("There was an error saving the location to GeoFire: " + error);
-                } else {
-                    System.out.println("Location saved on server successfully!");
-                }
+            public void onClick(View v) {
+                v1.showDropDown();
             }
         });
 
-
-        geoFire.getLocation("firebase-hq", new LocationCallback() {
+        i2.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onLocationResult(String key, GeoLocation location) {
-                if (location != null) {
-                    System.out.println(String.format("The location for key %s is [%f,%f]", key, location.latitude, location.longitude));
-
-
-                    Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-                    List<Address> addresses = null;
-                    try {
-                        addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Toast.makeText(getActivity(),"Your Current location is - " + "\n" + addresses.get(0).getAddressLine(0) + ", " +
-                            addresses.get(0).getAddressLine(1) + ", " + addresses.get(0).getAddressLine(2),Toast.LENGTH_LONG).show();
-
-
-//                    Toast.makeText(getActivity(),  String.valueOf(location.latitude) +" "+ String.valueOf(location.longitude), Toast.LENGTH_LONG).show();
-                } else {
-                    System.out.println(String.format("There is no location for key %s in GeoFire", key));
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.err.println("There was an error getting the GeoFire location: " + databaseError);
+            public void onClick(View v) {
+                v2.showDropDown();
             }
         });
 
-
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(28.6774052, 77.2066878), 0.2);
-
-
-        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+        i3.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onKeyEntered(String key, GeoLocation location) {
-                System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-                //The location of a key now matches the query criteria.
-                Toast.makeText(getActivity(),"Location key matches area.",Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void onKeyExited(String key) {
-                System.out.println(String.format("Key %s is no longer in the search area", key));
-                Toast.makeText(getActivity(),"Out of area",Toast.LENGTH_LONG).show();
-                //The location of a key no longer matches the query criteria.
-            }
-
-            @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
-                Toast.makeText(getActivity(),"In the  area",Toast.LENGTH_LONG).show();
-
-               //The location of a key changed but the location still matches the query criteria.
-            }
-
-            @Override
-            public void onGeoQueryReady() {
-                System.out.println("All initial data has been loaded and events have been fired!");
-                // All current data has been loaded from the server and all initial events have been fired.
-            }
-
-            @Override
-            public void onGeoQueryError(DatabaseError error) {
-                System.err.println("There was an error with this query: " + error);
-
-                //There was an error while performing this query, e.g. a violation of security rules.
+            public void onClick(View v) {
+                v3.showDropDown();
             }
         });
-        // textResult = rootView.findViewById(R.id.text_view_json);
 
-       /* listView = rootView.findViewById(R.id.listView);
-
-        // adding the base url.
-       /* Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://jsonplaceholder.typicode.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.myjson.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonPlaceHolderAPI jsonPlaceHolderAPI = retrofit.create(JsonPlaceHolderAPI.class);
-
-        Call<List<Post>> call = jsonPlaceHolderAPI.getPosts();
-
-        call.enqueue(new Callback<List<Post>>() {
+        i4.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-
-                // Checking if response is null or not. server may cause 404 error.
-                if (!response.isSuccessful()) {
-                    textResult.setText("Code : " + response.code());
-                    return;
-                }
-
-                List<Post> posts = response.body();
-
-
-                // getting all the post with id, userid, title and text.
-                /*for (Post post : posts) {
-
-                    String content = "";
-
-                    content += "ID:" + post.getId() + "\n";
-                    content += "UserId:" + post.getUserId() + "\n";
-                    content += "Title" + post.getTitle() + "\n";
-                    content += "Text : " + post.getText() + "\n\n";
-
-                    // using append  so that it does not override value.
-                    textResult.append(content);
-                }
-
-                // getting only title and showing into listView
-                String[] titile_text = new String[posts.size()];
-
-                for (int i = 0; i < posts.size(); i++) {
-                    titile_text[i] = posts.get(i).getTitle();
-                }
-
-                //displaying the string array into listview
-                listView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, titile_text));
-
+            public void onClick(View v) {
+                v4.showDropDown();
             }
+        });
 
+        i5.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-                textResult.setText(t.getMessage());
-
+            public void onClick(View v) {
+                v5.showDropDown();
             }
-        });*/
+        });
 
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s1,s2,s3,s4,s5;
+                s1 = v1.getText().toString().trim();
+                s2 = v2.getText().toString().trim();
+                s3 = v3.getText().toString().trim();
+                s4 = v4.getText().toString().trim();
+                s5 = v5.getText().toString().trim();
+
+                if((s1.equals("") && s2.equals("") && s3.equals("")) || (s4.equals("Symptom 4")
+                        && s5.equals("Symptom 5"))){
+                    Toast.makeText(getActivity(), "Select atleast three symptoms", Toast.LENGTH_LONG).show();
+                }else {
+                    //Toast.makeText(getActivity(), "inside else", Toast.LENGTH_SHORT).show();
+                    CheckMeAdapter checkMeAdapter = new CheckMeAdapter();
+                    listView.setAdapter(checkMeAdapter);
+                    int resId = R.anim.layout_animation_fall_down;
+                    LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getActivity(), resId);
+                    listView.setLayoutAnimation(animation);
+                    predictor();
+                }
+            }
+        });
 
         return rootView;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.buttonDiagnose :
+    private void predictor(){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), CheckMeDetails.class);
+                intent.putExtra("Title", itemName.get(position));
+                intent.putExtra("Descsy",itemDessymp.get(position));
+                intent.putExtra("Descre", itemDesreme.get(position));
+                startActivity(intent);
+            }
+        });
+    }
 
-                break;
-            default:
-                System.out.println("Wont Able To Get you Please TRY AGAIN!");
+    private void getImages(){
+        itemName.add(R.string.app); //1
+        itemName.add(R.string.pcos);
+        itemName.add(R.string.pms);
+
+        itemSub.add(R.string.nb_s);
+        itemSub.add(R.string.nb_m);
+        itemSub.add(R.string.nb_fair);
+
+        itemDessymp.add(R.string.app_symptoms);
+        itemDessymp.add(R.string.pcos_symptoms);
+        itemDessymp.add(R.string.pms_symptoms);
+
+        itemDesreme.add(R.string.app_cure);
+        itemDesreme.add(R.string.pcos_cure);
+        itemDesreme.add(R.string.pms_cure);
+    }
+
+    class CheckMeAdapter extends BaseAdapter{
+
+        @Override
+        public int getCount() {
+            return itemName.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = getLayoutInflater().inflate(R.layout.custom_layout_checkme,null);
+            TextView textView = convertView.findViewById(R.id.item_name);
+            TextView tv = convertView.findViewById(R.id.textView8);
+            textView.setText(itemName.get(position));
+            tv.setText(itemSub.get(position));
+            return convertView;
         }
     }
+
 }
